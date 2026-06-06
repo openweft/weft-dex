@@ -18,7 +18,8 @@ FROM scratch
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
 COPY --from=builder /out/dex /usr/local/bin/dex
-COPY --from=builder /src/web /web
+# dex v2.34+ embeds web/{templates,static} via go:embed, so we don't
+# need to copy the upstream web/ tree into the runtime stage anymore.
 EXPOSE 5556 5557 5558
 ENTRYPOINT ["/usr/local/bin/dex"]
 CMD ["serve", "/etc/dex/config.yaml"]
