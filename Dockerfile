@@ -14,7 +14,9 @@ RUN git clone --depth=1 --branch=${DEX_VERSION} https://github.com/dexidp/dex.gi
 ENV CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH}
 RUN go build -trimpath -ldflags="-s -w" -o /out/dex ./cmd/dex
 
-FROM gcr.io/distroless/static-debian12:nonroot
+FROM scratch
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
 COPY --from=builder /out/dex /usr/local/bin/dex
 COPY --from=builder /src/web /web
 EXPOSE 5556 5557 5558
