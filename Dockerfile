@@ -29,6 +29,13 @@ ENV CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH}
 RUN go build -trimpath -ldflags="-s -w" -o /out/dex ./cmd/dex
 
 FROM scratch
+ARG DEX_VERSION
+LABEL org.opencontainers.image.title="weft-dex" \
+      org.opencontainers.image.description="openweft 4-arch build of dexidp/dex (CGO=0 via ent SQLite backend)" \
+      org.opencontainers.image.version="${DEX_VERSION}" \
+      org.opencontainers.image.source="https://github.com/openweft/weft-dex" \
+      org.opencontainers.image.url="https://github.com/openweft/weft-dex" \
+      org.opencontainers.image.licenses="Apache-2.0"
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
 COPY --from=builder /out/dex /usr/local/bin/dex
